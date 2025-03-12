@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const API_URL = process.env.REACT_APP_API_URL  // ✅ Correct URL
+const API_URL = process.env.REACT_APP_API_URL || "https://network-marketing.onrender.com/api"; // Default value for local testing
 
 export const getMembers = async () => {
     try {
@@ -12,7 +10,6 @@ export const getMembers = async () => {
         return [];
     }
 };
-
 
 export const addMember = async (member) => {
     try {
