@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const API_URL = "https://network-marketing.onrender.com/api";
+const API_URL = "https://network-marketing.onrender.com/api";  // ✅ Correct URL
 
 export const getMembers = async () => {
     try {
-        const res = await fetch("https://network-marketing.onrender.com/api/members");
+        const res = await fetch(`${API_URL}/members`);
         if (!res.ok) throw new Error("API call failed");
         return await res.json();
     } catch (err) {
@@ -12,6 +12,7 @@ export const getMembers = async () => {
         return [];
     }
 };
+
 
 export const addMember = async (member) => {
     try {
