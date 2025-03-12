@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import { getMembers } from "./services/api";
+import MemberForm from "./components/MemberForm";
+import MemberList from "./components/MemberList";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [members, setMembers] = useState([]);
+
+    const fetchMembers = async () => {
+        const data = await getMembers();
+        setMembers(data);
+    };
+
+    useEffect(() => {
+        fetchMembers();
+    }, []);
+
+    return (
+        <div className="container mt-4">
+            <h2 className="text-center">Network Marketing Hierarchy</h2>
+            <MemberForm members={members} refresh={fetchMembers} />
+            <h3>Member Hierarchy</h3>
+            <MemberList members={members} refresh={fetchMembers} />
+        </div>
+    );
 }
 
 export default App;
