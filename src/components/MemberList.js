@@ -1,38 +1,32 @@
-// import React from "react";
-// import { deleteMember } from "../services/api";
 
-// function MemberList({ members, refresh }) {
-//     return (
-//         <ul className="list-group">
-//             {members.map((m) => (
-//                 <li key={m._id} className="list-group-item d-flex justify-content-between">
-//                     {m.name} (Upline: {m.parent || "None"})
-//                     <button className="btn btn-sm btn-danger" onClick={() => { deleteMember(m._id); refresh(); }}>
-//                         Remove
-//                     </button>
-//                 </li>
-//             ))}
-//         </ul>
-//     );
-// }
+import React, { useState, useEffect } from "react";
+import { deleteMember, getMembers } from "../services/api";
 
-// export default MemberList;
+function MemberList() {
+    const [members, setMembers] = useState([]);  // Stores members from API
+    const [expanded, setExpanded] = useState({}); // Stores expanded members
 
-import React, { useState } from "react";
-import { deleteMember } from "../services/api";
+    // ✅ Fetch members when the component mounts
+    useEffect(() => {
+        fetchMembers();
+    }, []);
 
-function MemberList({ members, refresh }) {
-    const [expanded, setExpanded] = useState({}); // Track toggled members
+    // ✅ Function to fetch members
+    const fetchMembers = async () => {
+        const data = await getMembers();
+        console.log("Fetched Members:", data); // Debugging
+        setMembers(data);
+    };
 
-    // Toggle function for expand/collapse
+    // ✅ Toggle function for expand/collapse
     const toggleMember = (id) => {
         setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
     };
 
-    // Recursive function to build hierarchy
-    const renderMembers = (parent = "") => {
+    // ✅ Recursive function to build hierarchy
+    const renderMembers = (parentId = null) => {
         return members
-            .filter((m) => m.parent === parent)
+            .filter((m) => m.parent === parentId)
             .map((m) => (
                 <li key={m._id} className="list-group-item">
                     {/* ▶️ Toggle Button */}
@@ -42,21 +36,32 @@ function MemberList({ members, refresh }) {
                     👤 {m.name} (Upline: {m.parent ? `📌 ${m.parent}` : "🏆 None"})
 
                     {/* ❌ Delete Button */}
-                    <button className="btn btn-sm btn-danger float-end" onClick={() => { deleteMember(m._id); refresh(); }}>
+                    <button
+                        className="btn btn-sm btn-danger float-end"
+                        onClick={async () => {
+                            await deleteMember(m._id);
+                            fetchMembers(); // Refresh list after delete
+                        }}
+                    >
                         ❌ Remove
                     </button>
 
                     {/* 🔽 Nested Child Members */}
                     {expanded[m._id] && (
                         <ul className="list-group mt-2 ms-4">
-                            {renderMembers(m.name)}
+                            {renderMembers(m._id)}
                         </ul>
                     )}
                 </li>
             ));
     };
 
-    return <ul className="list-group">{renderMembers()}</ul>;
+    return (
+        <div>
+            <h3 className="mb-3">Member List</h3>
+            {members.length === 0 ? <p>No members found.</p> : <ul className="list-group">{renderMembers()}</ul>}
+        </div>
+    );
 }
 
 export default MemberList;
