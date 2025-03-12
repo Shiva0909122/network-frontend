@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://network-marketing.onrender.com/api";  // ✅ Correct URL
+const API_URL = process.env.REACT_APP_API_URL  // ✅ Correct URL
 
 export const getMembers = async () => {
     try {
