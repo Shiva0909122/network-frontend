@@ -1,14 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { addMember } from "../services/api";
 
-function MemberForm({ members = [], refresh }) { // ✅ Default to empty array
+function MemberForm({ members, refresh }) {
     const [name, setName] = useState("");
     const [parent, setParent] = useState("");
     const [showForm, setShowForm] = useState(true); // Toggle Form Visibility
 
+    // ✅ Debugging log to check members value
+    useEffect(() => {
+        console.log("✅ members prop received in MemberForm:", members);
+    }, [members]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!name.trim()) return; // ✅ Prevent empty names
+        if (!name.trim()) return; // Prevent empty names
         await addMember({ name, parent });
         setName("");
         setParent("");
@@ -45,7 +50,7 @@ function MemberForm({ members = [], refresh }) { // ✅ Default to empty array
                             onChange={(e) => setParent(e.target.value)}
                         >
                             <option value="">🏆 None (Top Level)</option>
-                            {(members || []).map((m) => (  // ✅ Ensures members is an array
+                            {(Array.isArray(members) ? members : []).map((m) => (  // ✅ Ensures members is an array
                                 <option key={m._id} value={m.name}>👤 {m.name}</option>
                             ))}
                         </select>
