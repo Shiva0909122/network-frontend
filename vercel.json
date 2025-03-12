@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "https://network-marketing.onrender.com/api/$1"
+      }
+    ]
+  }
+  

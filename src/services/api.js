@@ -1,15 +1,17 @@
-const API_URL = process.env.REACT_APP_API_URL || "https://network-marketing.onrender.com/api"; // Default value for local testing
+import axios from "axios";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const getMembers = async () => {
     try {
-        const res = await fetch(`${API_URL}/members`);
-        if (!res.ok) throw new Error("API call failed");
-        return await res.json();
+        const res = await axios.get(`${API_URL}/members`);
+        return res.data;
     } catch (err) {
         console.error("Error fetching members:", err);
         return [];
     }
 };
+
 
 export const addMember = async (member) => {
     try {
